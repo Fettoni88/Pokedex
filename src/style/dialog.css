@@ -1,0 +1,126 @@
+dialog {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    border-width: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.dialog-content {
+    background-color: #082029;
+    border-radius: 16px;
+    width: 360px;
+    max-width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-img {
+    height: 200px;
+    object-fit: contain;
+}
+
+.dialog-leiste {
+    display: flex;
+    height: 48px;
+    background-color: #0e3846;
+}
+
+.dialog-leiste .tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: background-color 0.2s ease;
+}
+
+.dialog-leiste .tab:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.7);
+}
+
+.dialog-leiste .tab.active {
+    border-bottom-color: rgb(255, 94, 0);
+}
+
+.dialog-content-bottom {
+    min-height: 200px;
+}
+
+.info-table {
+    width: 100%;
+    color: white;
+    font-size: 14px;
+    padding: 8px;
+}
+
+.info-table td {
+    padding: 6px 8px;
+    vertical-align: top;
+}
+
+.info-table td:first-child {
+    opacity: 0.8;
+    white-space: nowrap;
+}
+
+.stats-table {
+    color: white;
+    font-size: 14px;
+    padding: 8px;
+}
+
+.stats-table td {
+    padding: 6px 8px;
+}
+
+.stats-table td:first-child {
+    width: 70px;
+}
+
+.stat-bar {
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    width: 255px;
+}
+
+.stat-fill {
+    height: 100%;
+    background-color: orange;
+    transition: width 0.6s ease;
+}
+
+.evo-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    padding-top: 48px;
+}
+
+.evo-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.evo-stage img {
+    width: 64px;
+    height: auto;
+}
+
+.evo-arrow {
+    font-size: 24px;
+    opacity: 0.6;
+}
