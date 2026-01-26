@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="icon" type="image/x-icon" href="./assets/img/pokeball.png">
+
+
+    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/pokemon-bg.css">
+    <link rel="stylesheet" href="./style/dialog.css">
+    <script src="./script/script.js" defer></script>
+    <script src="./script/template.js" defer></script>
+    <script src="./script/dialog.js" defer></script>
+    <script src="./script/filter.js" defer></script>
+</head>
+
+<body onload="init()">
+
+    <header>
+        <div class="header-flex">
+            <div class="header-left">
+                <img class="pokeball-img" src="./assets/img/pokeball.png" alt="pokeball">
+                <h1>Pokedex</h1>
+            </div>
+            <input id="filter" type="text">
+        </div>
+    </header>
+
+    <main>
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+            <span>Lade Pokémon…</span>
+        </div>
+
+        <div id="gridcontainer" class="gridcontainer">
+
+        </div>
+        <div class="button">
+            <button id="load-more">Mehr laden</button>
+        </div>
+
+        <dialog id="pokemon-dialog">
+            <div class="dialog-content">
+
+                <h2 id="dialog-title"></h2>
+
+                <img id="dialog-img" class="pokemon-img dialog-img" alt="pokemon">
+
+                <div class="dfc" id="dialog-types"></div>
+
+                <div class="dialog-leiste">
+                    <div class="tab active">Main</div>
+                    <div class="tab">Stats</div>
+                    <div class="tab">Evo Chain</div>
+                </div>
+
+                <div class="dialog-content-bottom">
+
+                    <div class="tab-content main">
+                        <table class="info-table">
+                            <tbody>
+                                <tr>
+                                    <td>Height:</td>
+                                    <td id="dialog-height"></td>
+                                </tr>
+                                <tr>
+                                    <td>Weight:</td>
+                                    <td id="dialog-weight"></td>
+                                </tr>
+                                <tr>
+                                    <td>Base experience:</td>
+                                    <td id="dialog-exp"></td>
+                                </tr>
+                                <tr>
+                                    <td>Abilities:</td>
+                                    <td id="dialog-abilities"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-content stats" style="display:none;">
+                        <table class="stats-table">
+                            <tbody id="dialog-stats"></tbody>
+                        </table>
+                    </div>
+                    >
+                    <div class="tab-content evo" style="display:none;">
+                        <div class="evo-chain" id="dialog-evo"></div>
+                    </div>
+
+                </div>
+            </div>
+        </dialog>
+
+    </main>
+
+    <footer></footer>
+
+</body>
+
+</html>
