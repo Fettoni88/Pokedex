@@ -15,6 +15,7 @@
     <script src="./script/template.js" defer></script>
     <script src="./script/dialog.js" defer></script>
     <script src="./script/filter.js" defer></script>
+    <script src="./script/load.js" defer></script>
 </head>
 
 <body onload="init()">
@@ -25,7 +26,7 @@
                 <img class="pokeball-img" src="./assets/img/pokeball.png" alt="pokeball">
                 <h1>Pokedex</h1>
             </div>
-            <input id="filter" type="text">
+            <input placeholder="Type name or number" id="filter" type="text">
         </div>
     </header>
 
@@ -44,9 +45,11 @@
 
         <dialog id="pokemon-dialog">
             <div class="dialog-content">
+                <div class="dialog-head">
+                    <h2 id="dialog-title"></h2>
 
-                <h2 id="dialog-title"></h2>
-
+                    <button id="dialog-close" class="dialog-close">✕</button>
+                </div>
                 <img id="dialog-img" class="pokemon-img dialog-img" alt="pokemon">
 
                 <div class="dfc" id="dialog-types"></div>
