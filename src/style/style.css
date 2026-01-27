@@ -153,7 +153,7 @@ footer {
     .gridcontainer {
         grid-template-columns: repeat(3, 1fr);
         gap: 18px;
-        max-width: 700px;
+        max-width: 650px;
     }
 
     main {
@@ -166,7 +166,7 @@ footer {
     .gridcontainer {
         grid-template-columns: repeat(2, 1fr);
         gap: 18px;
-        max-width: 450px;
+        max-width: 420px;
     }
 
     main {
@@ -178,7 +178,7 @@ footer {
 @media (max-width: 550px) {
     .gridcontainer {
         grid-template-columns: repeat(1, 1fr);
-        max-width: 210px;
+        max-width: 200px;
     }
 
     h1 {
