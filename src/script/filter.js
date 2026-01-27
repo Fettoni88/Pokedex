@@ -1,49 +1,45 @@
-const STEP = 10;
-let visibleCount = 10;
+let isSearching = false;
 
-function initFilter() {
-    const input = document.getElementById("filter");
-
-    input.addEventListener("input", () => {
-        const value = input.value.toLowerCase().trim();
-        filterPokemon(value);
-    });
-}
-
-function filterPokemon(search) {
-    const container = document.getElementById("gridcontainer");
-    container.innerHTML = "";
-    const filtered = allPokemon.filter(pokemon =>
-        pokemon.name.includes(search) ||
-        pokemon.id.toString().includes(search)
-    );
-    let cardsHTML = "";
-    filtered.forEach(pokemon => {
-        cardsHTML += createPokemonCard(pokemon);
-    });
-    container.innerHTML = cardsHTML;
-    addCardEvents();
-}
-
-function applyFilter() {
-    const input = document.getElementById("filter");
-    const search = input.value.toLowerCase().trim();
-    let filtered = allPokemon;
+function render() {
+    const search = document.getElementById("filter").value
+        .toLowerCase()
+        .trim();
     if (search) {
-        filtered = allPokemon.filter(pokemon =>
-            pokemon.name.includes(search) ||
-            pokemon.id.toString().includes(search)
-        );
+        isSearching = true;
+        searchingPokemon(search);
+        return;
     }
-    renderPokemonList(filtered);
-    toggleLoadMoreButton(filtered.length);
+    if (isSearching) {
+        resetFilter();
+        return;
+    }
+    renderPokemonList(allPokemon);
+    toggleLoadMoreButton(false);
+}
+
+function searchingPokemon(search) {
+    const matches = pokemonIndexData.filter(p =>
+        p.name.includes(search) ||
+        String(p.id).includes(search)
+    );
+
+    loadMatchingPokemon(matches);
+    toggleLoadMoreButton(true);
+}
+
+function resetFilter() {
+    isSearching = false;
+    pokemonIndex = 0;
+    allPokemon = [];
+    loadPokemon();
 }
 
 function initFilter() {
-    const input = document.getElementById("filter");
+    document.getElementById("filter")
+        .addEventListener("input", render);
+}
 
-    input.addEventListener("input", () => {
-        visibleCount = STEP;
-        applyFilter();
-    });
+function initLoadMore() {
+    document.getElementById("load-more")
+        .addEventListener("click", loadPokemon);
 }

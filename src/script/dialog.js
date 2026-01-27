@@ -1,24 +1,3 @@
-const POKE_URL = "https://pokeapi.co/api/v2/pokemon/";
-const SPECIES_URL = "https://pokeapi.co/api/v2/pokemon-species/";
-
-async function openPokemonDialog(id) {
-    const dialog = document.getElementById("pokemon-dialog");
-    const res = await fetch(POKE_URL + id);
-    const pokemon = await res.json();
-    fillDialogMain(pokemon);
-    renderStats(pokemon);
-    await loadEvolutionChain(id);
-    initTabs();
-    dialog.style.display = "flex";
-}
-
-async function loadEvolutionChain(id) {
-    const speciesRes = await fetch(SPECIES_URL + id);
-    const species = await speciesRes.json();
-    const evoRes = await fetch(species.evolution_chain.url);
-    const evoData = await evoRes.json();
-    renderEvolutionChain(evoData.chain);
-}
 
 function fillDialogMain(pokemon) {
     const typeClass = getPokemonTypeClass(pokemon);
@@ -27,20 +6,25 @@ function fillDialogMain(pokemon) {
     const img = document.getElementById("dialog-img");
     img.className = "pokemon-img dialog-img";
     img.classList.add(typeClass);
-    img.src = pokemon.sprites.other["official-artwork"].front_default;
+    img.src = pokemon.image;
     img.alt = pokemon.name;
-    renderTypes(pokemon);
+    renderIconDialog(pokemon);
     renderBasicData(pokemon);
+}
+
+function renderIconDialog(pokemon) {
+    const icon = document.getElementById("dialog-types");
+    icon.innerHTML = "";
+
+    icon.innerHTML += getPokemonIconTypes(pokemon);
 }
 
 function getBasicData(pokemon) {
     return {
         height: pokemon.height / 10 + " m",
         weight: pokemon.weight / 10 + " kg",
-        exp: pokemon.base_experience,
-        abilities: pokemon.abilities
-            .map(a => capitalizeFirstLetter(a.ability.name))
-            .join(", ")
+        exp: pokemon.exp,
+        abilities: pokemon.abilities.join(", ")
     };
 }
 
@@ -56,8 +40,11 @@ function renderStats(pokemon) {
     const statsBody = document.getElementById("dialog-stats");
     statsBody.innerHTML = "";
     pokemon.stats.forEach(stat => {
-        const percent = Math.min((stat.base_stat / 255) * 100, 100);
-        statsBody.innerHTML += templateStatRow(stat.stat.name, percent);
+        const percent = Math.min((stat.value / 255) * 100, 100);
+        statsBody.innerHTML += templateStatRow(
+            formatStatName(stat.name),
+            percent
+        );
     });
 }
 
@@ -70,30 +57,31 @@ function formatStatName(name) {
     );
 }
 
+function extractEvolutionChain(chain) {
+    const result = [];
+
+    function walk(node) {
+        result.push({
+            id: Number(node.species.url.split("/").at(-2)),
+            name: node.species.name
+        });
+        node.evolves_to.forEach(walk);
+    }
+
+    walk(chain);
+    return result;
+}
+
 function renderEvolutionChain(chain) {
     const evoContainer = document.getElementById("dialog-evo");
-    evoContainer.innerHTML = createEvoChain(chain);
-}
+    evoContainer.innerHTML = "";
 
-function createEvoChain(chain) {
-    let evoChain = "";
-    let current = chain;
-    while (current) {
-        const evoId = extractIdFromUrl(current.species.url);
-        evoChain += evoTemplate(evoId, current.species.name);
-        if (current.evolves_to.length > 0) {
-            evoChain += evoArrowTemplate();
-            current = current.evolves_to[0];
-        } else {
-            current = null;
+    chain.forEach((p, index) => {
+        evoContainer.innerHTML += evoTemplate(p.id, p.name);
+        if (index < chain.length - 1) {
+            evoContainer.innerHTML += evoArrowTemplate();
         }
-    }
-    return evoChain;
-}
-
-function extractIdFromUrl(url) {
-    const parts = url.split("/");
-    return parts[parts.length - 2];
+    });
 }
 
 function changeTabs() {
@@ -121,9 +109,17 @@ function initTabs() {
 
 function initDialogClose() {
     const dialog = document.getElementById("pokemon-dialog");
+    const closeBtn = document.getElementById("dialog-close");
+
+    closeBtn.addEventListener("click", closeDialog);
+
     dialog.addEventListener("click", e => {
         if (!e.target.closest(".dialog-content")) {
-            dialog.style.display = "none";
+            closeDialog();
         }
     });
+}
+
+function closeDialog() {
+    document.getElementById("pokemon-dialog").style.display = "none";
 }

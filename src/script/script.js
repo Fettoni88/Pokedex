@@ -1,35 +1,20 @@
-const URL = "https://pokeapi.co/api/v2/pokemon/"
+const URL = "https://pokeapi.co/api/v2/pokemon/";
+const SPECIES_URL = "https://pokeapi.co/api/v2/pokemon-species/";
+const LIST_URL = "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0";
+const STEP = 10;
+
+let pokemonIndex = 0;
+let pokemonIds = [];
 let allPokemon = [];
 
-async function loadPokemon() {
-    const container = document.getElementById("gridcontainer");
-    container.innerHTML = "";
-    showLoader();
-    try {
-        await iterierePokemon(1, 151);
-
-        visibleCount = STEP;
-        applyFilter();
-
-    } catch (error) {
-        console.error("API-Fehler:", error);
-    }
-    finally {
-        hideLoader();
-    }
-}
-
-async function iterierePokemon(start, ende) {
-    allPokemon = [];
-
-    for (let id = start; id <= ende; id++) {
-        const res = await fetch(URL + id);
-        if (!res.ok) {
-            throw new Error("HTTP Fehler: " + res.status);
-        }
-        const pokemon = await res.json();
-        allPokemon.push(pokemon);
-    }
+async function init() {
+    await loadPokemonIndex();
+    await loadPokemon();
+    changeTabs();
+    initDialogClose();
+    initFilter();
+    initLoadMore();
+    initCardClick();
 }
 
 function initCardClick() {
@@ -39,8 +24,12 @@ function initCardClick() {
         const card = e.target.closest(".card");
         if (!card) return;
 
-        const id = Number(card.dataset.id);
-        openPokemonDialog(id);
+        const pokemonId = Number(card.dataset.id);
+        const pokemon = allPokemon.find(p => p.id === pokemonId);
+
+        if (!pokemon) return;
+
+        openPokemonDialog(pokemon);
     });
 }
 
@@ -49,7 +38,17 @@ function getPokemonTypeClass(pokemon) {
         return "unknown";
     }
 
-    return pokemon.types[0].type.name;
+    return pokemon.types[0];
+}
+
+function getPokemonIconTypes(pokemon) {
+    let iconTypes = "";
+    for (let i = 0; i < pokemon.types.length; i++) {
+        const typeName = pokemon.types[i];
+
+        iconTypes += createPokemonIcon(typeName);
+    }
+    return iconTypes;
 }
 
 function capitalizeFirstLetter(text) {
@@ -61,28 +60,24 @@ function renderPokemonList(list) {
     const container = document.getElementById("gridcontainer");
     container.innerHTML = "";
 
-    const visiblePokemon = list.slice(0, visibleCount);
-
     let cardsHTML = "";
-    visiblePokemon.forEach(pokemon => {
+    list.forEach(pokemon => {
         cardsHTML += createPokemonCard(pokemon);
     });
 
     container.innerHTML = cardsHTML;
 }
 
-function initLoadMore() {
+function toggleLoadMoreButton(searchActive) {
     const btn = document.getElementById("load-more");
 
-    btn.addEventListener("click", () => {
-        visibleCount += STEP;
-        applyFilter();
-    });
-}
+    if (searchActive) {
+        btn.style.display = "none";
+        return;
+    }
 
-function toggleLoadMoreButton(total) {
-    const btn = document.getElementById("load-more");
-    btn.style.display = visibleCount < total ? "block" : "none";
+    btn.style.display =
+        pokemonIndex < pokemonIndexData.length ? "block" : "none";
 }
 
 function showLoader() {
@@ -93,11 +88,21 @@ function hideLoader() {
     document.getElementById("loader").style.display = "none";
 }
 
-function init() {
-    loadPokemon();
-    changeTabs();
-    initDialogClose();
-    initFilter();
-    initLoadMore();
-    initCardClick();
+function objetifyPokemon(p) {
+    return {
+        id: p.id,
+        name: p.name,
+        image: p.sprites.other["official-artwork"].front_default,
+        types: p.types.map(t => t.type.name),
+        stats: p.stats.map(s => ({
+            name: s.stat.name,
+            value: s.base_stat
+        })),
+        height: p.height,
+        weight: p.weight,
+        exp: p.base_experience,
+        abilities: p.abilities.map(a =>
+            capitalizeFirstLetter(a.ability.name)
+        )
+    };
 }

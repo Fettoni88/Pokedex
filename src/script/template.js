@@ -1,27 +1,21 @@
 function createPokemonCard(pokemon) {
-    const typeClass = getPokemonTypeClass(pokemon);
     return `
         <div class="card" data-id="${pokemon.id}">
             <h2>#${pokemon.id} ${capitalizeFirstLetter(pokemon.name)}</h2>
-            <img class="pokemon-img ${typeClass}"
-                src="${pokemon.sprites.other["official-artwork"].front_default}"
+            <img class="pokemon-img ${getPokemonTypeClass(pokemon)}"
+                src="${pokemon.image}"
                 alt="${pokemon.name}">
             <div>${getPokemonIconTypes(pokemon)}</div>
         </div>
     `;
 }
 
-function getPokemonIconTypes(pokemon) {
-    let iconTypes = "";
-    for (let i = 0; i < pokemon.types.length; i++) {
-        const typeName = pokemon.types[i].type.name;
-
-        iconTypes +=
-            '<img class="types-icons" ' +
-            'src="./assets/icons/' + typeName + '.svg" ' +
-            'alt="' + typeName + '">';
-    }
-    return iconTypes;
+function createPokemonIcon(typeName) {
+    return `
+        <img class="types-icons"
+             src="./assets/icons/${typeName}.svg"
+             alt="${typeName}">
+    `;
 }
 
 function templateStatRow(statName, percent) {
@@ -35,19 +29,6 @@ function templateStatRow(statName, percent) {
             </td>
         </tr>
     `;
-}
-
-function renderTypes(pokemon) {
-    const typesDiv = document.getElementById("dialog-types");
-    typesDiv.innerHTML = "";
-
-    pokemon.types.forEach(t => {
-        typesDiv.innerHTML += `
-            <img class="types-icons"
-                 src="./assets/icons/${t.type.name}.svg"
-                 alt="${t.type.name}">
-        `;
-    });
 }
 
 function evoTemplate(id, name) {
