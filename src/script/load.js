@@ -23,10 +23,11 @@ async function loadPokemon() {
         const pokemon = await getPokemon(entry.id);
         allPokemon.push(pokemon);
     }
-    pokemonIndex += STEP;
 
+    pokemonIndex += STEP;
     hideLoader();
-    render();
+    renderPokemonList(allPokemon);
+    toggleLoadMoreButton(false);
 }
 
 async function getPokemon(pokemonId) {
@@ -38,6 +39,8 @@ async function getPokemon(pokemonId) {
 }
 
 async function openPokemonDialog(pokemon) {
+    document.getElementById("dialog-evo").innerHTML = "";
+
     fillDialogMain(pokemon);
     renderStats(pokemon);
 
@@ -72,7 +75,13 @@ async function loadMatchingPokemon(matches) {
         const pokemon = await getPokemon(m.id);
         allPokemon.push(pokemon);
     }
-
     hideLoader();
     renderPokemonList(allPokemon);
+}
+
+async function resetFilter() {
+    hideMessages();
+    pokemonIndex = 0;
+    allPokemon = [];
+    await loadPokemon();
 }

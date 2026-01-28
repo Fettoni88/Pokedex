@@ -11,10 +11,11 @@ async function init() {
     await loadPokemonIndex();
     await loadPokemon();
     changeTabs();
-    initDialogClose();
     initFilter();
+    initDialogClose();
     initLoadMore();
     initCardClick();
+    initSearchButton();
 }
 
 function initCardClick() {
