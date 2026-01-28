@@ -123,3 +123,49 @@ function initDialogClose() {
 function closeDialog() {
     document.getElementById("pokemon-dialog").style.display = "none";
 }
+
+function initTabSwitchButton() {
+    const btn = document.getElementById("dialog-next-tab");
+    const tabs = document.querySelectorAll(".dialog-leiste .tab");
+    const contents = document.querySelectorAll(".tab-content");
+
+    btn.addEventListener("click", () => {
+        let activeIndex = [...tabs].findIndex(t =>
+            t.classList.contains("active")
+        );
+
+        tabs[activeIndex].classList.remove("active");
+        contents[activeIndex].style.display = "none";
+
+        const nextIndex = (activeIndex + 1) % tabs.length;
+
+        tabs[nextIndex].classList.add("active");
+        contents[nextIndex].style.display = "block";
+    });
+}
+
+function switchDialogPokemon(direction) {
+    const index = allPokemon.findIndex(
+        p => p.id === currentDialogPokemon.id
+    );
+
+    if (index === -1) return;
+
+    let newIndex = index + direction;
+
+    if (newIndex < 0) newIndex = allPokemon.length - 1;
+    if (newIndex >= allPokemon.length) newIndex = 0;
+
+    openPokemonDialog(allPokemon[newIndex]);
+}
+
+function initDialogNavigation() {
+    document
+        .getElementById("dialog-prev")
+        .addEventListener("click", () => switchDialogPokemon(-1));
+
+    document
+        .getElementById("dialog-next")
+        .addEventListener("click", () => switchDialogPokemon(1));
+}
+

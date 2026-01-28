@@ -16,6 +16,7 @@ async function init() {
     initLoadMore();
     initCardClick();
     initSearchButton();
+    initDialogNavigation();
 }
 
 function initCardClick() {

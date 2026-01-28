@@ -1,4 +1,5 @@
 let pokemonIndexData = [];
+let currentDialogPokemon = null;
 
 async function loadPokemonIndex() {
     const res = await fetch(LIST_URL);
@@ -39,11 +40,11 @@ async function getPokemon(pokemonId) {
 }
 
 async function openPokemonDialog(pokemon) {
-    document.getElementById("dialog-evo").innerHTML = "";
+    currentDialogPokemon = pokemon;
 
+    document.getElementById("dialog-evo").innerHTML = "";
     fillDialogMain(pokemon);
     renderStats(pokemon);
-
     await loadEvolutionChain(pokemon.id);
 
     initTabs();
